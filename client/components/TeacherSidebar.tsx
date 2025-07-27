@@ -25,12 +25,7 @@ const TeacherSidebar = () => {
   return (
     <aside className="w-64 min-h-screen bg-white shadow-xl border-r border-gray-200">
       <div className="p-6">
-        <div className="flex items-center space-x-3 mb-8">
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-            <GraduationCap className="w-5 h-5 text-white" />
-          </div>
-          <h2 className="text-lg font-semibold text-gray-800">Teaching Hub</h2>
-        </div>
+        
         
         <nav className="space-y-2">
           {menuItems.map((item) => {
@@ -60,18 +55,7 @@ const TeacherSidebar = () => {
         </nav>
       </div>
       
-      <div className="absolute bottom-6 left-6 right-6">
-        <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
-          <div className="flex items-center space-x-2 mb-2">
-            <Clock className="w-4 h-4 text-green-600" />
-            <p className="text-sm text-green-700 font-medium">Today's Schedule</p>
-          </div>
-          <p className="text-xs text-green-600">Next class: Math - 10:30 AM</p>
-          <div className="w-full bg-green-200 rounded-full h-1 mt-2">
-            <div className="bg-green-600 h-1 rounded-full w-3/5"></div>
-          </div>
-        </div>
-      </div>
+      
     </aside>
   );
 };

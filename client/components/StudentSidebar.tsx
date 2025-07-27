@@ -62,18 +62,7 @@ const StudentSidebar = () => {
         </nav>
       </div>
       
-      <div className="absolute bottom-6 left-6 right-6">
-        <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200">
-          <div className="flex items-center space-x-2 mb-2">
-            <Trophy className="w-4 h-4 text-purple-600" />
-            <p className="text-sm text-purple-700 font-medium">Academic Progress</p>
-          </div>
-          <p className="text-xs text-purple-600">Current GPA: 3.8/4.0</p>
-          <div className="w-full bg-purple-200 rounded-full h-1 mt-2">
-            <div className="bg-purple-600 h-1 rounded-full w-4/5"></div>
-          </div>
-        </div>
-      </div>
+      
     </aside>
   );
 };

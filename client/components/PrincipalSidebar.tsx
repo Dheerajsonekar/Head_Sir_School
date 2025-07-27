@@ -26,12 +26,7 @@ const PrincipalSidebar = () => {
   return (
     <aside className="w-64 min-h-screen bg-white shadow-xl border-r border-gray-200">
       <div className="p-6">
-        <div className="flex items-center space-x-3 mb-8">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <LayoutDashboard className="w-5 h-5 text-white" />
-          </div>
-          <h2 className="text-lg font-semibold text-gray-800">Admin Panel</h2>
-        </div>
+        
         
         <nav className="space-y-2">
           {menuItems.map((item) => {
@@ -61,15 +56,7 @@ const PrincipalSidebar = () => {
         </nav>
       </div>
       
-      <div className="absolute bottom-6 left-6 right-6">
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
-          <p className="text-sm text-blue-700 font-medium mb-1">System Status</p>
-          <p className="text-xs text-blue-600">All systems operational</p>
-          <div className="w-full bg-blue-200 rounded-full h-1 mt-2">
-            <div className="bg-blue-600 h-1 rounded-full w-4/5"></div>
-          </div>
-        </div>
-      </div>
+      
     </aside>
   );
 };

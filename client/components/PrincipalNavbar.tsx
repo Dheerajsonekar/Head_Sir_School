@@ -13,30 +13,11 @@ const PrincipalNavbar = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold">Principal Dashboard</h1>
-            <p className="text-blue-200 text-sm">Administrative Control Panel</p>
+            <p className="text-blue-200 text-sm">Dr. Rajendra Prasad vidyalaya</p>
           </div>
         </div>
         
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link 
-            href="/admin/profile" 
-            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-          >
-            <User className="w-4 h-4" />
-            <span>Profile</span>
-          </Link>
-          <Link 
-            href="/admin/settings" 
-            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-          >
-            <Settings className="w-4 h-4" />
-            <span>Settings</span>
-          </Link>
-          <button className="relative p-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-          </button>
-        </nav>
+        
         
         <LogoutButton />
       </div>
