@@ -28,10 +28,7 @@ const StudentSidebar = () => {
     <aside className="w-64 min-h-screen bg-white shadow-xl border-r border-gray-200">
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-8">
-          <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-white" />
-          </div>
-          <h2 className="text-lg font-semibold text-gray-800">Study Center</h2>
+          
         </div>
         
         <nav className="space-y-2">

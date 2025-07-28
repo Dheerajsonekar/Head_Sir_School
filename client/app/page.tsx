@@ -153,7 +153,7 @@ export default function ModernSchoolHomepage() {
         <div className="absolute top-32 right-20 w-16 h-16 bg-yellow-400/20 rounded-full animate-bounce" style={{animationDelay: '1s', animationDuration: '4s'}}></div>
         <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-orange-400/20 rounded-full animate-bounce" style={{animationDelay: '1.5s', animationDuration: '3.5s'}}></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24  pt-38">
           <div className="text-center">
             <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight">
               Welcome to the

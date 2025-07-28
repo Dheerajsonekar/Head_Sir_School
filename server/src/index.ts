@@ -13,11 +13,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(cookieParser());
 
-// CORS configuration - IMPORTANT: Must be before other middleware
+
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000', // Your Next.js app URL
-  credentials: true, // ⭐ CRITICAL
+  origin: process.env.CLIENT_URL || 'http://localhost:3000', 
+  credentials: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   exposedHeaders: ['Set-Cookie'],

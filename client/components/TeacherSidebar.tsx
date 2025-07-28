@@ -16,6 +16,7 @@ const TeacherSidebar = () => {
 
   const menuItems = [
     { href: '/teacher/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/teacher/task', label: 'Task', icon: UserCheck },
     { href: '/teacher/classes', label: 'My Classes', icon: BookOpen },
     { href: '/teacher/students', label: 'Students', icon: GraduationCap },
     { href: '/teacher/attendance', label: 'Attendance', icon: UserCheck },

@@ -91,3 +91,23 @@ export const loginStudent = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Login failed' });
   }
 };
+
+
+export const getStudentProfile = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user || user.role !== "student") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Student fetch error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

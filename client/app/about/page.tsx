@@ -125,9 +125,9 @@ export default function AboutPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
             {/* Gallery Section */}
-             <section className="py-5 bg-white">
+            <section className="py-5 bg-white  pt-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    
+
 
                     <div className="relative">
                         {/* Main Gallery Carousel */}
@@ -175,8 +175,8 @@ export default function AboutPage() {
                                         key={index}
                                         onClick={() => setCurrentGallerySlide(index)}
                                         className={`w-3 h-3 rounded-full transition-all duration-300 ${currentGallerySlide === index
-                                                ? 'bg-white scale-125'
-                                                : 'bg-white/50 hover:bg-white/75'
+                                            ? 'bg-white scale-125'
+                                            : 'bg-white/50 hover:bg-white/75'
                                             }`}
                                     />
                                 ))}
@@ -190,8 +190,8 @@ export default function AboutPage() {
                                     key={image.id}
                                     onClick={() => setCurrentGallerySlide(index)}
                                     className={`relative aspect-video rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 ${currentGallerySlide === index
-                                            ? 'ring-4 ring-blue-500 ring-offset-2'
-                                            : 'hover:ring-2 hover:ring-blue-300'
+                                        ? 'ring-4 ring-blue-500 ring-offset-2'
+                                        : 'hover:ring-2 hover:ring-blue-300'
                                         }`}
                                 >
                                     <img
@@ -356,8 +356,8 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            
-            
+
+
             {/* Leadership Team */}
             <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -421,7 +421,7 @@ export default function AboutPage() {
                         community can make in your child's future.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        
+
                         <button className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
                             Apply Now
                             <ArrowRight className="ml-2 w-5 h-5" />
