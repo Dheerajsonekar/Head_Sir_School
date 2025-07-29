@@ -15,12 +15,12 @@ const PrincipalSidebar = () => {
   const pathname = usePathname();
 
   const menuItems = [
-    { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/teachers', label: 'Manage Teachers', icon: Users },
-    { href: '/admin/students', label: 'Manage Students', icon: GraduationCap },
-    { href: '/admin/tasks', label: 'Assign Tasks', icon: ClipboardList },
-    { href: '/admin/reports', label: 'Reports', icon: BarChart3 },
-    { href: '/admin/profile', label: 'Profile', icon: User },
+    { href: '/principal/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/principal/teachers', label: 'Manage Teachers', icon: Users },
+    { href: '/principal/students', label: 'Manage Students', icon: GraduationCap },
+    { href: '/principal/tasks', label: 'Assign Tasks', icon: ClipboardList },
+    { href: '/principal/reports', label: 'Reports', icon: BarChart3 },
+    { href: '/principal/profile', label: 'Profile', icon: User },
   ];
 
   return (
