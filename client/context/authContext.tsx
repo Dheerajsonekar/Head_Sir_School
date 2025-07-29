@@ -13,6 +13,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  initialized: boolean;
+  isLoggingOut: boolean;
   login: (userData: User) => void;
   logout: () => void;
   checkAuth: () => Promise<void>;
@@ -35,11 +37,26 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const checkAuth = async () => {
     try {
       console.log('🔍 Checking authentication status...');
+      
+      // Check if we have a token in cookies first (faster check)
+      const cookies = document.cookie;
+      const hasToken = cookies.includes('token') || cookies.includes('auth');
+      
+      if (!hasToken) {
+        console.log('❌ No auth token found in cookies');
+        setUser(null);
+        setLoading(false);
+        setInitialized(true);
+        return;
+      }
+
       const response = await api.get('/auth/verify');
       
       if (response.data.user) {
@@ -49,11 +66,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('❌ No user found');
         setUser(null);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log('❌ Auth check failed:', error);
+      // If it's a 401, clear any stale cookies
+      if (error.response?.status === 401) {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      }
       setUser(null);
     } finally {
       setLoading(false);
+      setInitialized(true);
     }
   };
 
@@ -61,43 +84,62 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('🔐 Logging in user:', userData.name);
     setUser(userData);
     setLoading(false);
+    setInitialized(true);
   };
 
   const logout = async () => {
     try {
       console.log('🚪 Logging out...');
+      // Set logout state to prevent error screens
+      setIsLoggingOut(true);
       setLoading(true);
-      await api.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout API call failed:', error);
-    } finally {
       setUser(null);
+      
+      // Clear cookies immediately
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      
+      // Make logout API call in background
+      api.post('/auth/logout').catch((error) => {
+        console.error('Logout API call failed:', error);
+      });
+      
+      // Immediate redirect without waiting for API
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout process failed:', error);
+      // Still redirect even if something goes wrong
+      setUser(null);
+      setIsLoggingOut(false);
       setLoading(false);
-      // Force a full page reload to clear all state
       window.location.href = '/';
     }
   };
 
-  // ⭐ CRITICAL: Prevent hydration mismatch
+  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // ⭐ CRITICAL: Only check auth after component mounts (client-side)
+  // Only check auth after component mounts (client-side)
   useEffect(() => {
-    if (mounted) {
+    if (mounted && !initialized) {
       checkAuth();
     }
-  }, [mounted]);
+  }, [mounted, initialized]);
 
-  // ⭐ CRITICAL: Handle 401 responses globally
+  // Handle 401 responses globally
   useEffect(() => {
     const interceptor = api.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response?.status === 401 && user && mounted) {
+        if (error.response?.status === 401 && user && mounted && initialized && !isLoggingOut) {
           console.log('🔒 Token expired, logging out...');
+          setIsLoggingOut(true);
           setUser(null);
+          // Clear cookies
+          document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
           window.location.href = '/';
         }
         return Promise.reject(error);
@@ -107,14 +149,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       api.interceptors.response.eject(interceptor);
     };
-  }, [user, mounted]);
+  }, [user, mounted, initialized, isLoggingOut]);
 
-  // ⭐ Prevent hydration mismatch by not rendering until mounted
+  // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
       <AuthContext.Provider value={{
         user: null,
         loading: true,
+        initialized: false,
+        isLoggingOut: false,
         login: () => {},
         logout: () => Promise.resolve(),
         checkAuth: () => Promise.resolve(),
@@ -127,6 +171,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const contextValue: AuthContextType = {
     user,
     loading,
+    initialized,
+    isLoggingOut,
     login,
     logout,
     checkAuth,

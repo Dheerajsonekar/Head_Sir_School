@@ -67,7 +67,7 @@ interface DashboardData {
 }
 
 export default function StudentDashboard() {
-  const { user } = useAuth();
+  const { user, isLoggingOut } = useAuth();
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -130,21 +130,45 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     const fetchDashboard = async () => {
+      // Don't fetch data if user is logging out
+      if (isLoggingOut || !user) {
+        return;
+      }
+
       try {
         setLoading(true);
+        setError(null);
         const res = await api.get("/student/dashboard");
         setDashboard(res.data);
-        setError(null);
       } catch (err: any) {
         console.error("Failed to fetch dashboard:", err);
-        setError(err.response?.data?.message || "Failed to load dashboard data");
+        
+        // Don't show error if we're logging out or if it's a 401 (handled by auth context)
+        if (!isLoggingOut && err.response?.status !== 401) {
+          setError(err.response?.data?.message || "Failed to load dashboard data");
+        }
       } finally {
-        setLoading(false);
+        // Only set loading to false if we're not logging out
+        if (!isLoggingOut) {
+          setLoading(false);
+        }
       }
     };
 
     fetchDashboard();
-  }, []);
+  }, [user, isLoggingOut]);
+
+  // Show loading while logging out
+  if (isLoggingOut) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Signing out...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

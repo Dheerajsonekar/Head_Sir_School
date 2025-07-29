@@ -1,6 +1,6 @@
-// Teacher Login
+// Teacher Login - Optimized Version
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "@/utils/axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
@@ -10,8 +10,24 @@ export default function TeacherLogin() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, user, initialized } = useAuth();
+
+  // Check if user is already logged in and redirect
+  useEffect(() => {
+    if (initialized && user) {
+      console.log('👤 User already logged in, redirecting to dashboard');
+      setShouldRedirect(true);
+      
+      // Redirect based on user role
+      const dashboardPath = user.role === 'teacher' ? '/teacher/dashboard' : 
+                           user.role === 'student' ? '/student/dashboard' : 
+                           '/principal/dashboard';
+      
+      router.replace(dashboardPath);
+    }
+  }, [user, initialized, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,23 +36,51 @@ export default function TeacherLogin() {
     try {
       const res = await api.post("/teacher/login", formData);
       if (res.status === 200) {
+        console.log('✅ Login successful, setting user data');
         login(res.data.user);
-        router.push("/teacher/dashboard");
+        
+        // Small delay to prevent flash
+        setTimeout(() => {
+          router.push("/teacher/dashboard");
+        }, 100);
       }
-    } catch (err) {
-      alert("Login failed.");
+    } catch (err: any) {
+      console.error('❌ Login failed:', err);
+      alert(err.response?.data?.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Show loading if redirecting or if auth is not initialized yet
+  if (!initialized || shouldRedirect) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <GraduationCap className="w-8 h-8 text-white" />
+          </div>
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-green-600 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-green-700 font-medium">
+            {shouldRedirect ? 'Redirecting to dashboard...' : 'Loading...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render login form if user is already authenticated
+  if (user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 transform transition-all duration-300">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 transition-transform hover:scale-105">
               <GraduationCap className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900">Teacher Login</h2>
@@ -58,6 +102,7 @@ export default function TeacherLogin() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -75,11 +120,13 @@ export default function TeacherLogin() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
+                  disabled={loading}
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -89,7 +136,7 @@ export default function TeacherLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-medium hover:from-green-700 hover:to-green-800 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
+              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-medium hover:from-green-700 hover:to-green-800 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] disabled:hover:scale-100"
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -106,7 +153,7 @@ export default function TeacherLogin() {
           <div className="mt-8 text-center">
             <p className="text-gray-600 text-sm">
               Need help? Contact{" "}
-              <a href="mailto:support@school.edu" className="text-green-600 hover:text-green-700 font-medium">
+              <a href="mailto:support@school.edu" className="text-green-600 hover:text-green-700 font-medium transition-colors">
                 IT Support
               </a>
             </p>

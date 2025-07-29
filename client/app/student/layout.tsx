@@ -5,6 +5,7 @@ import DynamicSidebar from "@/components/DynamicSideBar";
 import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import AppLoadingWrapperStudent from '@/components/AppLoadingWrapperStudent';
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -31,8 +32,10 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
     <div className="min-h-screen flex flex-col">
       
       <div className="flex flex-1">
+        <AppLoadingWrapperStudent>
         <DynamicSidebar />
         <main className="flex-1 p-4">{children}</main>
+        </AppLoadingWrapperStudent>
       </div>
     </div>
   );

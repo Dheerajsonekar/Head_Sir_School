@@ -5,6 +5,8 @@ import DynamicSidebar from "@/components/DynamicSideBar";
 import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import AppLoadingWrapperTeacher from "@/components/AppLoadingWrapperTeacher";
+import App from "next/app";
 
 export default function TeacherLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -20,7 +22,9 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+
       </div>
     );
   }
@@ -31,8 +35,10 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
     <div className="min-h-screen flex flex-col">
       
       <div className="flex flex-1">
+        <AppLoadingWrapperTeacher>
         <DynamicSidebar />
         <main className="flex-1 p-4">{children}</main>
+        </AppLoadingWrapperTeacher>
       </div>
     </div>
   );
