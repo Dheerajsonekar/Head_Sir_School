@@ -7,7 +7,7 @@ interface AppLoadingWrapperProps {
   children: ReactNode;
 }
 
-const AppLoadingWrapper = ({ children }: AppLoadingWrapperProps) => {
+const AppLoadingWrapperSchool = ({ children }: AppLoadingWrapperProps) => {
   const { loading, initialized, isLoggingOut } = useAuth();
 
   // Show loading screen while auth is being initialized or during logout
@@ -55,4 +55,4 @@ const AppLoadingWrapper = ({ children }: AppLoadingWrapperProps) => {
   return <>{children}</>;
 };
 
-export default AppLoadingWrapper;
+export default AppLoadingWrapperSchool;
