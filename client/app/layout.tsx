@@ -1,5 +1,6 @@
 import "./globals.css";
-import { AuthProvider } from "@/context/authContext";
+// Update the import path below to match the actual location and filename of your AuthProvider context
+import { AuthProvider } from "../context/authContext";
 import DynamicNavbar from "@/components/DynamicNavbar";
 import Footer from "@/components/Footer"
 

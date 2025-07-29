@@ -19,44 +19,69 @@ const ProtectedRoute = ({
   const router = useRouter();
   const [shouldRender, setShouldRender] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [authCheckComplete, setAuthCheckComplete] = useState(false);
 
   useEffect(() => {
-    console.log('🛡️ ProtectedRoute - user:', user, 'loading:', loading, 'initialized:', initialized, 'isLoggingOut:', isLoggingOut);
-    
-    // Don't do anything until auth is initialized or if we're logging out
-    if (!initialized || loading || isLoggingOut) {
+    console.log('🛡️ ProtectedRoute - State:', {
+      user: user?.name || 'none',
+      loading,
+      initialized,
+      isLoggingOut,
+      authCheckComplete
+    });
+
+    // Don't do anything while logging out
+    if (isLoggingOut) {
       setShouldRender(false);
+      setAuthCheckComplete(false);
       return;
     }
 
-    // No user - redirect to login
-    if (!user) {
-      console.log('❌ No user, redirecting to:', redirectTo);
-      setIsRedirecting(true);
+    // Wait for auth to be fully initialized
+    if (!initialized || loading) {
       setShouldRender(false);
-      router.replace(redirectTo);
+      setAuthCheckComplete(false);
       return;
     }
 
-    // Check role if specified
-    if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-      console.log('🚫 Wrong role, redirecting. User role:', user.role, 'Allowed:', allowedRoles);
-      setIsRedirecting(true);
-      setShouldRender(false);
-      router.replace(redirectTo);
-      return;
-    }
+    // Mark auth check as complete
+    setAuthCheckComplete(true);
 
-    // User is authorized
-    console.log('✅ User authorized');
-    setIsRedirecting(false);
-    setShouldRender(true);
+    // Give a small delay after initialization to prevent flashing
+    const timer = setTimeout(() => {
+      // No user after initialization is complete - redirect to login
+      if (!user) {
+        console.log('❌ No user after auth initialization, redirecting to:', redirectTo);
+        setIsRedirecting(true);
+        setShouldRender(false);
+        router.replace(redirectTo);
+        return;
+      }
+
+      // Check role if specified
+      if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+        console.log('🚫 Wrong role, redirecting. User role:', user.role, 'Allowed:', allowedRoles);
+        setIsRedirecting(true);
+        setShouldRender(false);
+        router.replace(redirectTo);
+        return;
+      }
+
+      // User is authorized
+      console.log('✅ User authorized, rendering content');
+      setIsRedirecting(false);
+      setShouldRender(true);
+    }, 100); // Small delay to prevent flash
+
+    return () => clearTimeout(timer);
   }, [user, loading, initialized, isLoggingOut, router, allowedRoles, redirectTo]);
 
-  // Show loading while checking authentication, during redirect, or while logging out
-  if (!initialized || loading || isRedirecting || isLoggingOut) {
+  // Show loading while checking authentication or during transitions
+  if (!initialized || loading || isLoggingOut || !authCheckComplete || isRedirecting) {
     const loadingMessage = isLoggingOut ? 'Signing out...' : 
-                          isRedirecting ? 'Redirecting...' : 'Loading...';
+                          isRedirecting ? 'Redirecting...' : 
+                          !initialized ? 'Initializing...' :
+                          'Checking authorization...';
                           
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -68,13 +93,13 @@ const ProtectedRoute = ({
     );
   }
 
-  // Don't render until we're sure the user should see this content
-  if (!shouldRender) {
+  // Additional safety check - don't render until we're absolutely sure
+  if (!shouldRender || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600">Verifying access...</p>
         </div>
       </div>
     );

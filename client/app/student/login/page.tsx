@@ -1,4 +1,4 @@
-// Student Login - Optimized Version
+// Student Login - Fixed Version
 "use client";
 import { useState, useEffect } from "react";
 import api from "@/utils/axios";
@@ -11,23 +11,53 @@ export default function StudentLogin() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
   const router = useRouter();
-  const { login, user, initialized } = useAuth();
+  const { login, user, initialized, isLoggingOut } = useAuth();
 
   // Check if user is already logged in and redirect
   useEffect(() => {
-    if (initialized && user) {
-      console.log('👤 User already logged in, redirecting to dashboard');
-      setShouldRedirect(true);
-      
-      // Redirect based on user role
-      const dashboardPath = user.role === 'student' ? '/student/dashboard' : 
-                           user.role === 'teacher' ? '/teacher/dashboard' : 
-                           '/principal/dashboard';
-      
-      router.replace(dashboardPath);
+    console.log('🔐 StudentLogin - State:', {
+      user: user?.name || 'none',
+      initialized,
+      isLoggingOut,
+      pageReady
+    });
+
+    // Don't do anything while logging out
+    if (isLoggingOut) {
+      setPageReady(false);
+      return;
     }
-  }, [user, initialized, router]);
+
+    // Wait for auth to be initialized
+    if (!initialized) {
+      setPageReady(false);
+      return;
+    }
+
+    // Small delay to ensure auth state is stable
+    const timer = setTimeout(() => {
+      if (user) {
+        console.log('👤 User already logged in, redirecting to dashboard');
+        setShouldRedirect(true);
+        setPageReady(false);
+        
+        // Redirect based on user role
+        const dashboardPath = user.role === 'student' ? '/student/dashboard' : 
+                             user.role === 'teacher' ? '/teacher/dashboard' : 
+                             '/principal/dashboard';
+        
+        router.replace(dashboardPath);
+      } else {
+        console.log('👤 No user found, showing login form');
+        setShouldRedirect(false);
+        setPageReady(true);
+      }
+    }, 100); // Small delay to prevent flash
+
+    return () => clearTimeout(timer);
+  }, [user, initialized, isLoggingOut, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +69,7 @@ export default function StudentLogin() {
         console.log('✅ Login successful, setting user data');
         login(res.data.user);
         
-        // Small delay to prevent flash
+        // Small delay to prevent flash, then redirect
         setTimeout(() => {
           router.push("/student/dashboard");
         }, 100);
@@ -52,8 +82,13 @@ export default function StudentLogin() {
     }
   };
 
-  // Show loading if redirecting or if auth is not initialized yet
-  if (!initialized || shouldRedirect) {
+  // Show loading while auth is not initialized, logging out, or redirecting
+  if (!initialized || isLoggingOut || shouldRedirect || !pageReady) {
+    const loadingMessage = isLoggingOut ? 'Signing out...' :
+                          shouldRedirect ? 'Redirecting to dashboard...' :
+                          !initialized ? 'Initializing...' :
+                          'Loading...';
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center p-4">
         <div className="text-center">
@@ -61,9 +96,7 @@ export default function StudentLogin() {
             <BookOpen className="w-8 h-8 text-white" />
           </div>
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-600 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-purple-700 font-medium">
-            {shouldRedirect ? 'Redirecting to dashboard...' : 'Loading...'}
-          </p>
+          <p className="text-purple-700 font-medium">{loadingMessage}</p>
         </div>
       </div>
     );

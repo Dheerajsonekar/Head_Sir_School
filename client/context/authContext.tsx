@@ -45,15 +45,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log('🔍 Checking authentication status...');
       
-      // Check if we have a token in cookies first (faster check)
-      const cookies = document.cookie;
-      const hasToken = cookies.includes('token') || cookies.includes('auth');
-      
-      if (!hasToken) {
-        console.log('❌ No auth token found in cookies');
-        setUser(null);
-        setLoading(false);
-        setInitialized(true);
+      // Don't check if we're logging out
+      if (isLoggingOut) {
+        console.log('🚪 Currently logging out, skipping auth check');
         return;
       }
 
@@ -63,20 +57,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('✅ User authenticated:', response.data.user.name);
         setUser(response.data.user);
       } else {
-        console.log('❌ No user found');
+        console.log('❌ No user found in response');
         setUser(null);
       }
     } catch (error: any) {
       console.log('❌ Auth check failed:', error);
-      // If it's a 401, clear any stale cookies
+      
+      // Only clear user if it's a 401 error (unauthorized)
       if (error.response?.status === 401) {
-        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        console.log('🔒 401 error - clearing user data');
+        setUser(null);
+        // Clear cookies on 401
+        if (typeof document !== 'undefined') {
+          document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+          document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+        }
+      } else {
+        // For network errors or other issues, don't clear the user
+        console.log('🌐 Network or other error, keeping current user state');
       }
-      setUser(null);
     } finally {
-      setLoading(false);
-      setInitialized(true);
+      if (!isLoggingOut) {
+        setLoading(false);
+        setInitialized(true);
+      }
     }
   };
 
@@ -89,26 +93,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
-      console.log('🚪 Logging out...');
-      // Set logout state to prevent error screens
+      console.log('🚪 Starting logout process...');
+      
+      // Set logout state immediately to prevent any auth checks
       setIsLoggingOut(true);
       setLoading(true);
+      
+      // Clear user data immediately
       setUser(null);
       
-      // Clear cookies immediately
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      // Clear cookies immediately with more comprehensive clearing
+      if (typeof document !== 'undefined') {
+        const domain = window.location.hostname;
+        const cookies = ['token', 'auth', 'session', 'jwt'];
+        
+        cookies.forEach(cookieName => {
+          // Clear for current domain
+          document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+          document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+          // Clear for parent domain (if subdomain)
+          if (domain.includes('.')) {
+            const parentDomain = '.' + domain.split('.').slice(-2).join('.');
+            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${parentDomain};`;
+          }
+        });
+      }
       
-      // Make logout API call in background
+      // Make logout API call (don't wait for it)
       api.post('/auth/logout').catch((error) => {
-        console.error('Logout API call failed:', error);
+        console.error('Logout API call failed (non-blocking):', error);
       });
       
-      // Immediate redirect without waiting for API
-      window.location.href = '/';
+      // Redirect after a short delay to ensure state is updated
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 100);
+      
     } catch (error) {
       console.error('Logout process failed:', error);
-      // Still redirect even if something goes wrong
+      // Even if logout fails, clear local state and redirect
       setUser(null);
       setIsLoggingOut(false);
       setLoading(false);
@@ -121,26 +144,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setMounted(true);
   }, []);
 
-  // Only check auth after component mounts (client-side)
+  // Only check auth after component mounts and not during logout
   useEffect(() => {
-    if (mounted && !initialized) {
+    if (mounted && !initialized && !isLoggingOut) {
       checkAuth();
     }
-  }, [mounted, initialized]);
+  }, [mounted, initialized, isLoggingOut]);
 
-  // Handle 401 responses globally
+  // Handle 401 responses globally, but be more careful
   useEffect(() => {
     const interceptor = api.interceptors.response.use(
       (response) => response,
       (error) => {
+        // Only handle 401 if we have a user and we're not already logging out
         if (error.response?.status === 401 && user && mounted && initialized && !isLoggingOut) {
-          console.log('🔒 Token expired, logging out...');
-          setIsLoggingOut(true);
-          setUser(null);
-          // Clear cookies
-          document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          window.location.href = '/';
+          console.log('🔒 Token expired detected via interceptor, logging out...');
+          
+          // Use a flag to prevent multiple logout calls
+          if (!isLoggingOut) {
+            logout();
+          }
         }
         return Promise.reject(error);
       }
@@ -150,6 +173,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       api.interceptors.response.eject(interceptor);
     };
   }, [user, mounted, initialized, isLoggingOut]);
+
+  // Handle page visibility change to recheck auth when user comes back
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user && initialized && !isLoggingOut) {
+        // Silently check auth when page becomes visible again
+        checkAuth().catch(() => {
+          // If auth check fails when page becomes visible, user might have been logged out elsewhere
+          console.log('👁️ Auth check failed on visibility change');
+        });
+      }
+    };
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }
+  }, [user, initialized, isLoggingOut]);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
