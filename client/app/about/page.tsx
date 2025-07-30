@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     Phone, Mail, MapPin, Calendar, Bell, Users, BookOpen, Award,
     GraduationCap, Trophy, Star, Clock, CheckCircle, ArrowRight,
@@ -10,6 +11,7 @@ import {
 
 export default function AboutPage() {
     const [currentGallerySlide, setCurrentGallerySlide] = useState(0);
+    const router = useRouter();
 
     const galleryImages = [
         {
@@ -121,6 +123,10 @@ export default function AboutPage() {
 
         return () => clearInterval(galleryTimer);
     }, []);
+
+    const handleNavigation = (path: string) => {
+        router.push(path);
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
@@ -422,7 +428,9 @@ export default function AboutPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
 
-                        <button className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <button
+                            onClick={() => handleNavigation('/admissions')}
+                            className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
                             Apply Now
                             <ArrowRight className="ml-2 w-5 h-5" />
                         </button>

@@ -1,26 +1,50 @@
 "use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, ChevronDown, User, Shield, GraduationCap } from "lucide-react";
+import { PortalButton } from "./PortalButton";
 
-const Navbar = () => {
+interface NavbarProps {
+  onNavigate?: (loading: boolean) => void;
+}
+
+const Navbar = ({ onNavigate }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
   const toggleAdminDropdown = () => setIsAdminDropdownOpen((prev) => !prev);
 
   const isActive = (path: string) => pathname === path;
 
+  // Enhanced navigation handler for regular pages
+  const handleNavClick = (path: string, callback?: () => void) => {
+    if (path !== pathname) {
+      // Trigger loading state
+      if (onNavigate) onNavigate(true);
+      
+      // Execute callback (like closing menus) immediately
+      if (callback) callback();
+      
+      // Navigate
+      router.push(path);
+    } else if (callback) {
+      callback();
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-lg border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
+          <button 
+            onClick={() => handleNavClick('/')}
+            className="flex items-center space-x-3 group"
+          >
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
@@ -32,12 +56,12 @@ const Navbar = () => {
                 Purva Madhyamik Vidyalaya
               </div>
             </div>
-          </Link>
+          </button>
 
           {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center space-x-2">
-            <Link
-              href="/"
+            <button
+              onClick={() => handleNavClick('/')}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${isActive('/')
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
@@ -45,9 +69,10 @@ const Navbar = () => {
             >
               Home
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300"></span>
-            </Link>
-            <Link
-              href="/about"
+            </button>
+            
+            <button
+              onClick={() => handleNavClick('/about')}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${isActive('/about')
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
@@ -55,9 +80,10 @@ const Navbar = () => {
             >
               About
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300"></span>
-            </Link>
-            <Link
-              href="/admissions"
+            </button>
+            
+            <button
+              onClick={() => handleNavClick('/admissions')}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${isActive('/admissions')
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
@@ -65,9 +91,10 @@ const Navbar = () => {
             >
               Admissions
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300"></span>
-            </Link>
-            <Link
-              href="/contact"
+            </button>
+            
+            <button
+              onClick={() => handleNavClick('/contact')}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${isActive('/contact')
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
@@ -75,11 +102,10 @@ const Navbar = () => {
             >
               Contact
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300"></span>
-            </Link>
-
+            </button>
 
             <div className="hidden lg:flex items-center space-x-3">
-              {/* Student Portal */}
+              {/* Student Portal - Using PortalButton */}
               <Link
                 href="/student/login"
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
@@ -104,31 +130,30 @@ const Navbar = () => {
                 {/* Admin Dropdown Menu */}
                 {isAdminDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 py-2">
-                    <Link
-                      href="/teacher/login"
-                      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 hover:text-green-700 transition-all duration-200 group"
-                      onClick={() => setIsAdminDropdownOpen
-                        (false)}
-                    >
-                      <User size={16} className="text-green-600 group-hover:scale-110 transition-transform" />
-                      <span className="font-medium">Teacher Login</span>
-                    </Link>
-                    <Link
-                      href="/principal/login"
-                      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 hover:text-purple-700 transition-all duration-200 group"
+                    <PortalButton
+                      type="teacher"
+                      icon={<User size={16} className="text-green-600 group-hover:scale-110 transition-transform" />}
+                      className="w-full justify-start text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 hover:text-green-700 shadow-none hover:shadow-none transform-none hover:scale-100 rounded-none hover:rounded-lg px-4 py-3"
                       onClick={() => setIsAdminDropdownOpen(false)}
+                      isMobile={true}
                     >
-                      <Shield size={16} className="text-purple-600 group-hover:scale-110 transition-transform" />
-                      <span className="font-medium">Principal Login</span>
-                    </Link>
+                      Teacher Login
+                    </PortalButton>
+                    
+                    <PortalButton
+                      type="principal"
+                      icon={<Shield size={16} className="text-purple-600 group-hover:scale-110 transition-transform" />}
+                      className="w-full justify-start text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 hover:text-purple-700 shadow-none hover:shadow-none transform-none hover:scale-100 rounded-none hover:rounded-lg px-4 py-3"
+                      onClick={() => setIsAdminDropdownOpen(false)}
+                      isMobile={true}
+                    >
+                      Principal Login
+                    </PortalButton>
                   </div>
                 )}
               </div>
             </div>
           </div>
-
-          {/* Portal Buttons */}
-
 
           {/* Mobile Menu Button */}
           <button
@@ -144,56 +169,56 @@ const Navbar = () => {
           <div className="lg:hidden bg-white rounded-b-2xl shadow-2xl border-t border-gray-100 mx-4 mb-4">
             <div className="px-6 py-4 space-y-3">
               {/* Mobile Navigation Links */}
-              <Link
-                href="/"
+              <button
+                onClick={() => handleNavClick('/', () => setIsOpen(false))}
                 className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-all duration-200 ${isActive('/')
                   ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600'
                   }`}
-                onClick={() => setIsOpen(false)}
               >
                 Home
-              </Link>
-              <Link
-                href="/about"
+              </button>
+              
+              <button
+                onClick={() => handleNavClick('/about', () => setIsOpen(false))}
                 className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-all duration-200 ${isActive('/about')
                   ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600'
                   }`}
-                onClick={() => setIsOpen(false)}
               >
                 About
-              </Link>
-              <Link
-                href="/admissions"
+              </button>
+              
+              <button
+                onClick={() => handleNavClick('/admissions', () => setIsOpen(false))}
                 className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-all duration-200 ${isActive('/admissions')
                   ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600'
                   }`}
-                onClick={() => setIsOpen(false)}
               >
                 Admissions
-              </Link>
-              <Link
-                href="/contact"
+              </button>
+              
+              <button
+                onClick={() => handleNavClick('/contact', () => setIsOpen(false))}
                 className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-all duration-200 ${isActive('/contact')
                   ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600'
                   }`}
-                onClick={() => setIsOpen(false)}
               >
                 Contact
-              </Link>
+              </button>
 
-              {/* Mobile Student Portal */}
-              <Link
-                href="/student/login"
-                className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium shadow-lg"
+              {/* Mobile Student Portal - Using PortalButton */}
+              <PortalButton
+                type="student"
+                icon={<User size={16} />}
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-lg w-full justify-start"
                 onClick={() => setIsOpen(false)}
+                isMobile={true}
               >
-                <User size={16} />
                 Student Portal
-              </Link>
+              </PortalButton>
 
               {/* Mobile Admin Portal */}
               <div className="space-y-2">
@@ -208,31 +233,34 @@ const Navbar = () => {
                   <ChevronDown size={16} className={`transition-transform duration-300 ${isAdminDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {/* Mobile Admin Dropdown */}
+                {/* Mobile Admin Dropdown - Using PortalButtons */}
                 {isAdminDropdownOpen && (
                   <div className="ml-4 space-y-2">
-                    <Link
-                      href="/teacher/login"
-                      className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-green-50 to-green-100 text-green-700 rounded-lg hover:from-green-100 hover:to-green-200 transition-all duration-200 font-medium"
+                    <PortalButton
+                      type="teacher"
+                      icon={<User size={16} />}
+                      className="bg-gradient-to-r from-green-50 to-green-100 text-green-700 hover:from-green-100 hover:to-green-200 w-full justify-start"
                       onClick={() => {
                         setIsAdminDropdownOpen(false);
                         setIsOpen(false);
                       }}
+                      isMobile={true}
                     >
-                      <User size={16} />
                       Teacher Login
-                    </Link>
-                    <Link
-                      href="/principal/login"
-                      className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 rounded-lg hover:from-purple-100 hover:to-purple-200 transition-all duration-200 font-medium"
+                    </PortalButton>
+                    
+                    <PortalButton
+                      type="principal"
+                      icon={<Shield size={16} />}
+                      className="bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 hover:from-purple-100 hover:to-purple-200 w-full justify-start"
                       onClick={() => {
                         setIsAdminDropdownOpen(false);
                         setIsOpen(false);
                       }}
+                      isMobile={true}
                     >
-                      <Shield size={16} />
                       Principal Login
-                    </Link>
+                    </PortalButton>
                   </div>
                 )}
               </div>

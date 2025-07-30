@@ -3,8 +3,8 @@ import "./globals.css";
 import { AuthProvider } from "../context/authContext";
 import DynamicNavbar from "@/components/DynamicNavbar";
 import Footer from "@/components/Footer"
-import AppLoadingWrapperSchool from "@/components/AppLoadingWrapperSchool";
-import App from "next/app";
+
+import PublicNavbar from "@/components/PublicNavbar";
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -14,12 +14,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           
             
-          <DynamicNavbar />
-          <AppLoadingWrapperSchool>
+          
+          <PublicNavbar>
 
             {children}
-          </AppLoadingWrapperSchool>
-          <Footer />
+          </PublicNavbar>
+          
          
         </AuthProvider>
       </body>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   Phone, Mail, MapPin, Calendar, Bell, Users, BookOpen, Award, 
   GraduationCap, Trophy, Star, Clock, CheckCircle, ArrowRight,
@@ -10,6 +11,7 @@ import {
 export default function ModernSchoolHomepage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState({});
+  const router = useRouter();
 
   const notifications = [
     { 
@@ -57,18 +59,20 @@ export default function ModernSchoolHomepage() {
     {
       icon: GraduationCap,
       title: "Academic Results",
-      description: "Access detailed performance reports and track ",
+      description: "Access detailed performance reports and track progress",
       color: "from-blue-500 to-blue-600",
       bgColor: "from-blue-50 to-blue-100",
-      textColor: "text-blue-900"
+      textColor: "text-blue-900",
+      link: "/student/login"
     },
     {
       icon: CreditCard,
       title: "Fee Payment",
-      description: "Secure and instant online payment for tuition ",
+      description: "Secure and instant online payment for tuition fees",
       color: "from-green-500 to-green-600",
       bgColor: "from-green-50 to-green-100",
-      textColor: "text-green-900"
+      textColor: "text-green-900",
+      link: "/student/login"
     },
     {
       icon: FileText,
@@ -76,7 +80,8 @@ export default function ModernSchoolHomepage() {
       description: "Download assignments, study materials and important notes",
       color: "from-purple-500 to-purple-600",
       bgColor: "from-purple-50 to-purple-100",
-      textColor: "text-purple-900"
+      textColor: "text-purple-900",
+      link: "/student/login"
     },
     {
       icon: Calendar,
@@ -84,7 +89,8 @@ export default function ModernSchoolHomepage() {
       description: "Real-time timetable updates and live class access links",
       color: "from-orange-500 to-orange-600",
       bgColor: "from-orange-50 to-orange-100",
-      textColor: "text-orange-900"
+      textColor: "text-orange-900",
+      link: "/student/login"
     }
   ];
 
@@ -110,6 +116,11 @@ export default function ModernSchoolHomepage() {
       description: "Focus on overall personality and character development"
     }
   ];
+
+  // Navigation handler
+  const handleNavigation = (path: string) => {
+    router.push(path);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -153,7 +164,7 @@ export default function ModernSchoolHomepage() {
         <div className="absolute top-32 right-20 w-16 h-16 bg-yellow-400/20 rounded-full animate-bounce" style={{animationDelay: '1s', animationDuration: '4s'}}></div>
         <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-orange-400/20 rounded-full animate-bounce" style={{animationDelay: '1.5s', animationDuration: '3.5s'}}></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24  pt-38">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 pt-38">
           <div className="text-center">
             <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight">
               Welcome to the
@@ -172,13 +183,12 @@ export default function ModernSchoolHomepage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-              <button className="group bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center">
+              <button 
+                onClick={() => handleNavigation('/admissions')}
+                className="group bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center"
+              >
                 Enroll Now
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center">
-                <Play className="mr-2 w-5 h-5" />
-                Watch Demo
               </button>
             </div>
 
@@ -303,7 +313,10 @@ export default function ModernSchoolHomepage() {
                 </div>
                 <h3 className={`text-xl font-bold mb-3 ${item.textColor}`}>{item.title}</h3>
                 <p className={`${item.textColor} opacity-80 mb-6 leading-relaxed`}>{item.description}</p>
-                <button className={`w-full bg-gradient-to-r ${item.color} text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-semibold flex items-center justify-center group-hover:scale-105`}>
+                <button 
+                  onClick={() => handleNavigation(item.link)}
+                  className={`w-full bg-gradient-to-r ${item.color} text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-semibold flex items-center justify-center group-hover:scale-105`}
+                >
                   Access Now
                   <ExternalLink className="ml-2 w-4 h-4" />
                 </button>
@@ -312,9 +325,6 @@ export default function ModernSchoolHomepage() {
           </div>
         </div>
       </section>
-
-      {/* Notifications Section */}
-      
 
       {/* About Section */}
       <section className="py-20 bg-white" data-animate id="about">
@@ -344,7 +354,10 @@ export default function ModernSchoolHomepage() {
                 ))}
               </div>
 
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center">
+              <button 
+                onClick={() => handleNavigation('/about')}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center"
+              >
                 Learn More About Us
                 <ArrowRight className="ml-2 w-5 h-5" />
               </button>
@@ -391,11 +404,13 @@ export default function ModernSchoolHomepage() {
             Take the first step towards excellence in education. Apply now for admission or explore our digital portal.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center">
+            <button 
+              onClick={() => handleNavigation('/admissions')}
+              className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center"
+            >
               Apply for Admission
               <Download className="ml-2 w-5 h-5" />
             </button>
-            
           </div>
         </div>
       </section>

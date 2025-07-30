@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter} from 'next/navigation';
 import { 
   Calendar, CheckCircle, Download, FileText, Users, Clock, 
   CreditCard, Star, Award, BookOpen, GraduationCap, Phone,
@@ -11,6 +12,7 @@ type Grade = 'nursery' | 'primary' | 'secondary';
 
 export default function AdmissionsPage() {
   const [selectedGrade, setSelectedGrade] = useState<Grade>('nursery');
+  const router = useRouter();
 
   const admissionSteps = [
     {
@@ -158,6 +160,10 @@ export default function AdmissionsPage() {
     }
   ];
 
+  const handleNavigation = (path: string)=> {
+    router.push(path);
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
       {/* Hero Section */}
@@ -177,11 +183,15 @@ export default function AdmissionsPage() {
             and become part of a community that nurtures future leaders.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center justify-center">
+            <button 
+            onClick = {() => handleNavigation('/applying')}
+            className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center justify-center">
               Apply Now
               <ArrowRight className="ml-2 w-5 h-5" />
             </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+            <button 
+            onClick = {() => handleNavigation('/applying')}
+            className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
               Download Brochure
               <Download className="ml-2 w-5 h-5" />
             </button>
@@ -397,15 +407,21 @@ export default function AdmissionsPage() {
                   Application Forms
                 </h3>
                 <div className="space-y-4">
-                  <button className="w-full flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+                  <button 
+                  onClick = {() => handleNavigation('/applying')}
+                  className="w-full flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
                     <span className="font-medium text-blue-900">Admission Application Form</span>
                     <Download className="w-5 h-5 text-blue-600" />
                   </button>
-                  <button className="w-full flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 rounded-xl transition-colors">
+                  <button 
+                  onClick = {() => handleNavigation('/applying')}
+                  className="w-full flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 rounded-xl transition-colors">
                     <span className="font-medium text-green-900">Medical Information Form</span>
                     <Download className="w-5 h-5 text-green-600" />
                   </button>
-                  <button className="w-full flex items-center justify-between p-4 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors">
+                  <button 
+                  onClick = {() => handleNavigation('/applying')}
+                  className="w-full flex items-center justify-between p-4 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors">
                     <span className="font-medium text-purple-900">Transport Registration Form</span>
                     <Download className="w-5 h-5 text-purple-600" />
                   </button>
@@ -475,7 +491,9 @@ export default function AdmissionsPage() {
             to see our facilities and meet our team.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center">
+            <button 
+            onClick = {() => handleNavigation('/applying')}
+            className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center">
               Apply Online Now
               <ArrowRight className="ml-2 w-5 h-5" />
             </button>
