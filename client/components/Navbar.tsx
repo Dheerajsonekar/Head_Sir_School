@@ -25,10 +25,10 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
     if (path !== pathname) {
       // Trigger loading state
       if (onNavigate) onNavigate(true);
-      
+
       // Execute callback (like closing menus) immediately
       if (callback) callback();
-      
+
       // Navigate
       router.push(path);
     } else if (callback) {
@@ -41,7 +41,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <button 
+          <button
             onClick={() => handleNavClick('/')}
             className="flex items-center space-x-3 group"
           >
@@ -70,7 +70,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
               Home
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300"></span>
             </button>
-            
+
             <button
               onClick={() => handleNavClick('/about')}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${isActive('/about')
@@ -81,7 +81,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
               About
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300"></span>
             </button>
-            
+
             <button
               onClick={() => handleNavClick('/admissions')}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${isActive('/admissions')
@@ -92,7 +92,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
               Admissions
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300"></span>
             </button>
-            
+
             <button
               onClick={() => handleNavClick('/contact')}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${isActive('/contact')
@@ -106,14 +106,16 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
 
             <div className="hidden lg:flex items-center space-x-3">
               {/* Student Portal - Using PortalButton */}
-              <Link
-                href="/student/login"
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
+              {/* Student Portal - Using PortalButton for consistency */}
+              <PortalButton
+                type="student"
+                icon={<User size={16} />}
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800"
               >
-                <User size={16} />
                 <span className="hidden xl:inline">Student Portal</span>
                 <span className="xl:hidden">Student</span>
-              </Link>
+              </PortalButton>
+
 
               {/* Admin Portal with Dropdown */}
               <div className="relative">
@@ -139,7 +141,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
                     >
                       Teacher Login
                     </PortalButton>
-                    
+
                     <PortalButton
                       type="principal"
                       icon={<Shield size={16} className="text-purple-600 group-hover:scale-110 transition-transform" />}
@@ -178,7 +180,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
               >
                 Home
               </button>
-              
+
               <button
                 onClick={() => handleNavClick('/about', () => setIsOpen(false))}
                 className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-all duration-200 ${isActive('/about')
@@ -188,7 +190,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
               >
                 About
               </button>
-              
+
               <button
                 onClick={() => handleNavClick('/admissions', () => setIsOpen(false))}
                 className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-all duration-200 ${isActive('/admissions')
@@ -198,7 +200,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
               >
                 Admissions
               </button>
-              
+
               <button
                 onClick={() => handleNavClick('/contact', () => setIsOpen(false))}
                 className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-all duration-200 ${isActive('/contact')
@@ -248,7 +250,7 @@ const Navbar = ({ onNavigate }: NavbarProps) => {
                     >
                       Teacher Login
                     </PortalButton>
-                    
+
                     <PortalButton
                       type="principal"
                       icon={<Shield size={16} />}

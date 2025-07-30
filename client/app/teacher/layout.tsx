@@ -35,10 +35,10 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
     <div className="min-h-screen flex flex-col">
       
       <div className="flex flex-1">
-        <AppLoadingWrapperTeacher>
+        
         <DynamicSidebar />
         <main className="flex-1 p-4">{children}</main>
-        </AppLoadingWrapperTeacher>
+        
       </div>
     </div>
   );
