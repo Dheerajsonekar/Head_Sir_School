@@ -18,8 +18,9 @@ app.use(cookieParser());
 app.use(cors({
   origin: [
     process.env.CLIENT_URL || 'http://localhost:3000',
-    'https://head-sir-school-backend.onrender.com',  // Add your actual Vercel URL
-    'http://localhost:3000'  // Keep for local development
+    'https://head-sir-school-backend.onrender.com',  
+    'http://localhost:3000'  ,
+    'https://head-sir-schoolfrontend.vercel.app'
   ],
   credentials: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
