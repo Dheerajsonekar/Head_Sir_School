@@ -10,10 +10,19 @@ export const logout = (req: Request, res: Response) => {
     console.log('🚪 Logout request received');
     console.log('🍪 Current cookies:', req.cookies);
     
+    // const cookieOptions = {
+    //   httpOnly: true,
+    //   secure: false, // ⭐ Must match login settings
+    //   sameSite: 'lax' as const, // ⭐ Must match login settings
+    //   path: '/',
+    // };
+
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     const cookieOptions = {
       httpOnly: true,
-      secure: false, // ⭐ Must match login settings
-      sameSite: 'lax' as const, // ⭐ Must match login settings
+      secure: isProduction, // true in production, false in development
+      sameSite: isProduction ? 'none' as const : 'lax' as const,
       path: '/',
     };
 

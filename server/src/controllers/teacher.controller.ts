@@ -57,16 +57,24 @@ export const loginTeacher = async (req: Request, res: Response) => {
       expiresIn: '7d',
     });
 
-    // ⭐ CRITICAL FIX: Proper cookie configuration for localhost
+    // // ⭐ CRITICAL FIX: Proper cookie configuration for localhost
+    // const cookieOptions = {
+    //   httpOnly: true,
+    //   secure: false, // ⭐ MUST be false for localhost HTTP
+    //   sameSite: 'lax' as const, // ⭐ MUST be 'lax' for localhost
+    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    //   path: '/', // ⭐ CRITICAL: Explicit path
+    //   domain: undefined, // ⭐ CRITICAL: Don't set domain for localhost
+    // };
+    const isProduction = process.env.NODE_ENV === 'production';
+
     const cookieOptions = {
       httpOnly: true,
-      secure: false, // ⭐ MUST be false for localhost HTTP
-      sameSite: 'lax' as const, // ⭐ MUST be 'lax' for localhost
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/', // ⭐ CRITICAL: Explicit path
-      domain: undefined, // ⭐ CRITICAL: Don't set domain for localhost
+      secure: isProduction, // true in production, false in development
+      sameSite: isProduction ? 'none' as const : 'lax' as const,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
     };
-
     console.log('🍪 Setting cookie with options:', cookieOptions);
     console.log('🔑 Token being set:', token.substring(0, 20) + '...');
 
@@ -85,7 +93,7 @@ export const loginTeacher = async (req: Request, res: Response) => {
 
     console.log('✅ Login successful for:', user.name);
     console.log('🔧 Response headers will include Set-Cookie');
-    
+
   } catch (err) {
     console.error('❌ Login error:', err);
     res.status(500).json({ message: 'Login failed' });
