@@ -34,8 +34,8 @@ const PublicPageWrapper = ({ children }: { children: React.ReactNode }) => {
             <DynamicNavbar />
             <AppLoadingWrapperSchool>
                 {children}
-            </AppLoadingWrapperSchool>
             <Footer />
+            </AppLoadingWrapperSchool>
         </>
     );
 };

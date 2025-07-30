@@ -184,7 +184,7 @@ export default function ModernSchoolHomepage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
               <button 
-                onClick={() => handleNavigation('/admissions')}
+                onClick={() => handleNavigation('/applying')}
                 className="group bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center"
               >
                 Enroll Now
@@ -405,7 +405,7 @@ export default function ModernSchoolHomepage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => handleNavigation('/admissions')}
+              onClick={() => handleNavigation('/applying')}
               className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center"
             >
               Apply for Admission

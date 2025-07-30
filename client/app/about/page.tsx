@@ -429,7 +429,7 @@ export default function AboutPage() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
 
                         <button
-                            onClick={() => handleNavigation('/admissions')}
+                            onClick={() => handleNavigation('/applying')}
                             className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
                             Apply Now
                             <ArrowRight className="ml-2 w-5 h-5" />
