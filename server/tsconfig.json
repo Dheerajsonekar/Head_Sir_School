@@ -9,6 +9,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "types": ["node", "express", "jsonwebtoken", "cors", "cookie-parser"],
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
