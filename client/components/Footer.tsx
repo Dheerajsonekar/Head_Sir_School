@@ -186,55 +186,23 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col items-center justify-center space-y-4">
             
-            {/* Enhanced Developer Credit */}
-            <div className="relative group">
-              {/* Animated background glow */}
-              <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 animate-pulse transition-all duration-500"></div>
+            {/* Single Line Credit */}
+            <div className="flex items-center justify-center space-x-6">
+              <div className="text-gray-400 text-sm">
+               © 2025 All rights reserved To Dr. Rajendra Prasad Purva Madhyamik Vidyalaya
+              </div>
               
-              {/* Main card */}
-              <div className="relative bg-gradient-to-r from-gray-800/90 to-gray-900/90 backdrop-blur-sm border border-gray-600/30 rounded-2xl px-8 py-6 group-hover:scale-105 transition-all duration-300 shadow-2xl">
-                
-                {/* Sparkle icons */}
-                <div className="absolute -top-2 -left-2">
-                  <Sparkles className="w-4 h-4 text-yellow-400 animate-pulse" />
-                </div>
-                <div className="absolute -bottom-2 -right-2">
-                  <Sparkles className="w-4 h-4 text-pink-400 animate-pulse" />
-                </div>
-                
-                <div className="flex items-center justify-center space-x-3">
-                  <div className="flex items-center space-x-2">
-                    <Code className="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
-                    <span className="text-gray-300 font-medium">Crafted with</span>
-                    <Heart className="w-4 h-4 text-red-400 animate-pulse" />
-                    <span className="text-gray-300 font-medium">by</span>
-                  </div>
-                  
-                  <div className="relative">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 font-bold text-lg tracking-wide group-hover:from-yellow-400 group-hover:via-pink-400 group-hover:to-purple-400 transition-all duration-500 animate-pulse">
-                      Dheeraj Sonekar & Co.
-                    </span>
-                    
-                    {/* Underline animation */}
-                    <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                  </div>
-                </div>
-                
-                {/* Subtitle */}
-                <div className="mt-3 text-center">
-                  <span className="text-xs text-gray-400 font-medium tracking-wider uppercase">
-                    ✨ Premium Web Solutions ✨
-                  </span>
-                </div>
+              <div className="w-px h-6 bg-gray-600"></div>
+              
+              <div className="flex items-center space-x-2 group">
+                <span className="text-gray-400 text-sm">Designed & Developed by</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 font-bold text-sm tracking-wide group-hover:from-yellow-400 group-hover:via-pink-400 group-hover:to-purple-400 transition-all duration-500">
+                  Dheeraj Sonekar & Co.
+                </span>
               </div>
             </div>
 
-            {/* Copyright */}
-            <div className="text-center mt-4">
-              <p className="text-gray-500 text-xs">
-                © 2025 Dr. Rajendra Prasad Purva Madhyamik Vidyalaya. All rights reserved.
-              </p>
-            </div>
+           
             
           </div>
         </div>
